@@ -12,7 +12,7 @@ import {
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance, { initializeCsrfToken } from '../api/axiosInstance';
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import * as Yup from 'yup';
 import './login.css'
 
@@ -136,10 +136,33 @@ function Register() {
                 />
                 {errors.password_confirmation && <p className="text-danger small text-center">{errors.password_confirmation}</p>}
 
-                <MDBBtn outline className='mx-2 px-5 text-white' color='white' size='lg' type='submit'>
-                  Sign Up
-                </MDBBtn>
+                <button
+  type="submit"
+  style={{
+    backgroundColor: '#606060',
+    color: 'white',
+    border: 'none',
+    padding: '10px 20px',
+    fontSize: '16px',
+    fontWeight: 'bold',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    margin: '10px 0',
+    transition: 'background-color 0.3s ease',
+  }}
+  onMouseOver={(e) => (e.target.style.backgroundColor = '#a4a8ac')}
+  onMouseOut={(e) => (e.target.style.backgroundColor = '#606060')}
+>
+  Sign Up
+</button>
+
+                <p>
+        Already have an account?{' '}
+        <Link to="/login" className="text-white-50 fw-bold">Login</Link>
+      </p>
               </form>
+
+                
 
             </MDBCardBody>
           </MDBCard>

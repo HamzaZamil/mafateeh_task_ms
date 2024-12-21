@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 import axiosInstance from '../api/axiosInstance';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, Link } from 'react-router-dom';
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import * as Yup from 'yup';
@@ -125,8 +125,11 @@ function Login() {
 
               
               <div>
-                <p className="mb-0">Don't have an account? <a href="#!" className="text-white-50 fw-bold">Sign Up</a></p>
-              </div>
+      <p className="mb-0">
+        Don't have an account?{' '}
+        <Link to="/" className="text-white-50 fw-bold">Sign Up</Link>
+      </p>
+    </div>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>
