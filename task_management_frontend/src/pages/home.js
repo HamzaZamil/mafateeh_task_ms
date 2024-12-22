@@ -4,6 +4,10 @@ import Navbar from "../components/navbar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
+import DataTable from 'react-data-table-component';
+import 'bootstrap/dist/css/bootstrap.min.css';
+import 'bootstrap-icons/font/bootstrap-icons.css';
+
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
@@ -17,7 +21,7 @@ function TaskList() {
         const token = sessionStorage.getItem('authToken');
         if (!token) {
             toast.error('Authorization token is missing. Redirecting to login...');
-            navigate('/login'); // Redirect to login page
+            navigate('/login');
             setIsLoading(false);
             return;
         }
@@ -29,7 +33,6 @@ function TaskList() {
                 },
             });
             setTasks(response.data);
-            console.log(response.data);
         } catch (error) {
             console.error('Error fetching tasks:', error.response?.data || error.message);
             toast.error('Failed to fetch tasks. Please try again.');
@@ -73,14 +76,72 @@ function TaskList() {
         navigate(`/editTask/${id}`);
     };
 
+    const filteredTasks = tasks
+        .filter((task) => (statusFilter ? task.status === statusFilter : true))
+        .sort((a, b) => {
+            if (sortOrder === 'asc') {
+                return new Date(a.due_date) - new Date(b.due_date);
+            } else {
+                return new Date(b.due_date) - new Date(a.due_date);
+            }
+        });
+
+    const columns = [
+        {
+            name: '#',
+            selector: (row, index) => index + 1,
+            width: '50px',
+        },
+        {
+            name: 'Title',
+            selector: (row) => row.title,
+            sortable: true,
+        },
+        {
+            name: 'Description',
+            selector: (row) => row.description,
+        },
+        {
+            name: 'Status',
+            selector: (row) => row.status,
+            sortable: true,
+        },
+        {
+            name: 'Due Date',
+            selector: (row) => row.due_date ? new Date(row.due_date).toLocaleDateString() : 'No due date',
+            sortable: true,
+        },
+        {
+            name: 'Actions',
+            cell: (row) => (
+                <div>
+                    <button
+                        className="btn btn-primary mx-2"
+                        onClick={(e) => handleEdit(e, row.id)}
+                    >
+                        <i className="bi bi-pencil-square"></i>
+                    </button>
+
+                    <button
+                        className="btn btn-danger"
+                        onClick={(e) => handleDelete(e, row.id)}
+                    >
+                        <i class="bi bi-trash"></i>
+                    </button>
+                </div>
+            ),
+        },
+    ];
+
     return (
         <>
             <Navbar />
 
-            <div className="container border shadow p-3 mx-auto mt-4">
+            <div className="container border shadow p-4 mx-auto mt-4">
                 <ToastContainer />
-                <h1 className="text-center">Task Management System</h1>
-                <div className="d-flex justify-content-between mb-3">
+                <h1 className="text-center mb-4">Task Management System</h1>
+
+                <div className="d-flex justify-content-between mb-4">
                     <select
                         className="form-control w-25"
                         onChange={(e) => setStatusFilter(e.target.value)}
@@ -105,49 +166,15 @@ function TaskList() {
                 {isLoading ? (
                     <p>Loading tasks...</p>
                 ) : (
-                    <table className="table table-striped">
-                        <thead>
-                            <tr>
-                                <th>#</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Status</th>
-                                <th>Due Date</th>
-                                <th>Actions</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {tasks.length === 0 ? (
-                                <tr>
-                                    <td colSpan="6">No tasks found</td>
-                                </tr>
-                            ) : (
-                                tasks.map((task, index) => (
-                                    <tr key={task.id}>
-                                        <td>{index + 1}</td>
-                                        <td>{task.title}</td>
-                                        <td>{task.description}</td>
-                                        <td>{task.status}</td>
-                                        <td>{task.due_date ? new Date(task.due_date).toLocaleDateString() : 'No due date'}</td>
-                                        <td>
-                                            <button
-                                                className="btn btn-primary mx-2"
-                                                onClick={(e) => handleEdit(e, task.id)}
-                                            >
-                                                Edit
-                                            </button>
-                                            <button
-                                                className="btn btn-danger"
-                                                onClick={(e) => handleDelete(e, task.id)}
-                                            >
-                                                Delete
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                    <DataTable
+                        columns={columns}
+                        data={filteredTasks}
+                        pagination
+                        highlightOnHover
+                        striped
+                        responsive
+                        noHeader
+                    />
                 )}
             </div>
         </>
