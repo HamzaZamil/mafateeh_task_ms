@@ -11,7 +11,7 @@ import {
 import { toast, ToastContainer } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import axiosInstance, { initializeCsrfToken } from '../api/axiosInstance';
-import { useNavigate, Link } from 'react-router-dom';
+import { useNavigate, Link } from "react-router-dom";
 import * as Yup from 'yup';
 import './login.css';
 
@@ -25,7 +25,7 @@ function Register() {
   const [errors, setErrors] = useState({});
   const navigate = useNavigate();
 
-  // Validation Schema
+  // **Validation Schema**
   const validationSchema = Yup.object().shape({
     name: Yup.string().required('Name is required'),
     email: Yup.string().email('Invalid email').required('Email is required'),
@@ -45,22 +45,27 @@ function Register() {
     e.preventDefault();
 
     try {
+      // **Validate Form Data**
       await validationSchema.validate(formData, { abortEarly: false });
-      setErrors({});
+      setErrors({}); // Clear existing errors
 
+      // **Initialize CSRF Token**
       await initializeCsrfToken();
 
+      // **Submit Form**
       const response = await axiosInstance.post('/register', formData);
 
+      // **Handle Successful Registration**
       if (response.data.token) {
-        sessionStorage.setItem('authToken', response.data.token);
-        sessionStorage.setItem('user_id', response.data.user?.id || '');
-        toast.success('Registered Successfully!', { position: 'top-right', autoClose: 3000 });
-        setTimeout(() => navigate('/home'), 2000);
+        sessionStorage.setItem('authToken', response.data.token); // Store token
+        sessionStorage.setItem('user_id', response.data.user?.id || ''); // Store user ID
+        toast.success('Registered Successfully!', { position: "top-right", autoClose: 3000 });
+        setTimeout(() => navigate('/home'), 3000); // Redirect after success
       } else {
-        throw new Error('Token missing from response');
+        throw new Error("Token is missing from the response.");
       }
     } catch (err) {
+      // **Handle Validation Errors**
       if (err.name === 'ValidationError') {
         const validationErrors = {};
         err.inner.forEach((error) => {
@@ -68,10 +73,11 @@ function Register() {
         });
         setErrors(validationErrors);
       } else {
-        toast.error(err.response?.data?.message || 'Registration failed. Please try again.', {
-          position: 'top-right',
-          autoClose: 5000,
-        });
+        // **Handle Server-Side Errors**
+        const serverErrors = err.response?.data?.errors || {};
+        const errorMessages = Object.values(serverErrors).flat().join(' ');
+        setErrors(serverErrors);
+        toast.error(errorMessages || "Registration failed. Please try again.", { position: "top-right", autoClose: 5000 });
       }
     }
   };
@@ -84,53 +90,66 @@ function Register() {
           <MDBCard className='bg-dark text-white my-5 mx-auto' style={{ borderRadius: '1rem', maxWidth: '400px' }}>
             <MDBCardBody className='p-5 d-flex flex-column align-items-center mx-auto w-100'>
               <h2 className="fw-bold mb-2 text-uppercase">Sign Up</h2>
-              <form onSubmit={handleSubmit} className="w-100">
+              <p className="text-white-50 mb-5">Please fill in the details to create your account!</p>
+
+              <form onSubmit={handleSubmit} className='w-100'>
+                {/* Name Input */}
                 <MDBInput
                   wrapperClass='mb-4 w-100'
                   labelClass='text-white'
                   label='Name'
+                  id='nameInput'
                   type='text'
                   name='name'
                   value={formData.name}
                   onChange={handleChange}
                   size="lg"
                 />
-                {errors.name && <p className="text-danger small">{errors.name}</p>}
+                {errors.name && <p className="text-danger small text-center">{errors.name}</p>}
+
+                {/* Email Input */}
                 <MDBInput
                   wrapperClass='mb-4 w-100'
                   labelClass='text-white'
                   label='Email'
+                  id='emailInput'
                   type='email'
                   name='email'
                   value={formData.email}
                   onChange={handleChange}
                   size="lg"
                 />
-                {errors.email && <p className="text-danger small">{errors.email}</p>}
+                {errors.email && <p className="text-danger small text-center">{errors.email}</p>}
+
+                {/* Password Input */}
                 <MDBInput
                   wrapperClass='mb-4 w-100'
                   labelClass='text-white'
                   label='Password'
+                  id='passwordInput'
                   type='password'
                   name='password'
                   value={formData.password}
                   onChange={handleChange}
                   size="lg"
                 />
-                {errors.password && <p className="text-danger small">{errors.password}</p>}
+                {errors.password && <p className="text-danger small text-center">{errors.password}</p>}
+
+                {/* Confirm Password Input */}
                 <MDBInput
                   wrapperClass='mb-4 w-100'
                   labelClass='text-white'
                   label='Confirm Password'
+                  id='passwordConfirmInput'
                   type='password'
                   name='password_confirmation'
                   value={formData.password_confirmation}
                   onChange={handleChange}
                   size="lg"
                 />
-                {errors.password_confirmation && (
-                  <p className="text-danger small">{errors.password_confirmation}</p>
-                )}
+                {errors.password_confirmation && <p className="text-danger small text-center">{errors.password_confirmation}</p>}
+
+                {/* Submit Button */}
                 <button
                   type="submit"
                   style={{
@@ -139,17 +158,24 @@ function Register() {
                     border: 'none',
                     padding: '10px 20px',
                     fontSize: '16px',
+                    fontWeight: 'bold',
                     borderRadius: '5px',
                     cursor: 'pointer',
+                    margin: '10px 0',
+                    transition: 'background-color 0.3s ease',
                   }}
+                  onMouseOver={(e) => (e.target.style.backgroundColor = '#a4a8ac')}
+                  onMouseOut={(e) => (e.target.style.backgroundColor = '#606060')}
                 >
                   Sign Up
                 </button>
+
+                {/* Link to Login */}
+                <p>
+                  Already have an account?{' '}
+                  <Link to="/login" className="text-white-50 fw-bold">Login</Link>
+                </p>
               </form>
-              <p>
-                Already have an account?{' '}
-                <Link to="/login" className="text-white-50 fw-bold">Login</Link>
-              </p>
             </MDBCardBody>
           </MDBCard>
         </MDBCol>

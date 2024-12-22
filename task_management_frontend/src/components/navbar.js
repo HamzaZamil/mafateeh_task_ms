@@ -1,3 +1,4 @@
+
 import axios from '../api/axiosInstance';
 import { Link, useNavigate } from 'react-router-dom';
 function Navbar() {
@@ -8,10 +9,12 @@ function Navbar() {
             if (token) {
                 await axios.post(
                     "/logout",
+
                     {
                         headers: {
                             Authorization: `Bearer ${token}`,
                             withCredentials: true
+
                         },
                     }
                 );
@@ -33,21 +36,21 @@ function Navbar() {
                 <div className="collapse navbar-collapse" id="navbarNav">
                     <ul className="navbar-nav">
                         <li className="nav-item">
-                            <a className="nav-link active" aria-current="page" href="/home" style={{ color: 'white' }}>
-                                Home
+                        <a className="nav-link active" aria-current="page" href="/home" style={{ color: 'white' }}>
+                        Home
                             </a>
                         </li>
                         <li className="nav-item">
-                            <a className="nav-link" href="/addTask" style={{ color: 'white' }}>
-                                Add Task
+                        <a className="nav-link" href="/addTask" style={{ color: 'white' }}>
+                        Add Task
                             </a>
                         </li>
-                    </ul>
-                </div>
-                <div style={{ position: 'absolute', right: '20px' }}>
+                        <div style={{ position: 'absolute', right: '20px' }}>
                     <a className="nav-link" href="#" onClick={handleLogout} style={{ color: 'white' }}>
                         Logout
                     </a>
+                </div>
+                    </ul>
                 </div>
             </div>
         </nav>

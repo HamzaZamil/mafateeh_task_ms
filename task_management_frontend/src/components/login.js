@@ -127,7 +127,7 @@ function Login() {
               <div>
       <p className="mb-0">
         Don't have an account?{' '}
-        <Link to="/" className="text-white-50 fw-bold">Sign Up</Link>
+        <Link to="/register" className="text-white-50 fw-bold">Sign Up</Link>
       </p>
     </div>
             </MDBCardBody>

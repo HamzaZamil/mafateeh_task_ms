@@ -1,0 +1,22 @@
+.custom-dropdown,
+.search-box {
+    border: 1px solid #495057;
+    background-color: #F8F9FA;
+    color: #2b2d2e;
+    transition: border-color 0.3s, box-shadow 0.3s;
+}
+
+.custom-dropdown:focus,
+.search-box:focus {
+    border-color: #000;
+    box-shadow: 0 0 5px rgba(0, 0, 0, 0.5);
+}
+
+.custom-dropdown:hover,
+.search-box:hover {
+    border-color: #000;
+}
+
+.custom-dropdown option {
+    color: #000;
+}

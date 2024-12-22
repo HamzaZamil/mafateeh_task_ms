@@ -8,18 +8,22 @@ import NotFound from './pages/notFound';
 import UnAuthorized from './pages/unauthorized';
 import AddTask from './pages/addTask'; // Fixed Typo
 import EditTask from './pages/editTask';
+import Register from './components/register';
+import Login from './components/login';
 
 function App() {
   return (
     <div className="App">
       <Router>
         <Routes>
-          <Route path="/" element={<Auth />} />
+          <Route path="/" element={<Register />} />
           <Route path="/home" element={<Home />} />
           <Route path="*" element={<NotFound />} />
           <Route path="/unauthorized" element={<UnAuthorized />} />
           <Route path="/addTask" element={<AddTask />} /> {/* Fixed Typo */}
           <Route path="/editTask/:id" element={<EditTask />} />
+          <Route path="/register" element={<Register />} />
+          <Route path="/login" element={<Login />} />
         </Routes>
       </Router>
     </div>

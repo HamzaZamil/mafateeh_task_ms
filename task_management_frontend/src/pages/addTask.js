@@ -50,9 +50,9 @@ function AddTask() {
         <>
             <Navbar />
             <ToastContainer />
-            <div className="container mt-5">
-                <h1 className="text-center mb-4" style={{ color: "#2b2d2e" }}>Add New Task</h1>
-                <div className="card shadow-sm p-4" style={{ backgroundColor: "#F8F9FA" }}>
+            <div className="d-flex justify-content-center align-items-center" style={{ minHeight: "100vh" }}>
+                <div className="card shadow-sm p-4" style={{ width: "800px", backgroundColor: "#F8F9FA", borderRadius: "8px" }}>
+                    <h1 className="text-center mb-4" style={{ color: "#2b2d2e" }}>Add New Task</h1>
                     <form onSubmit={formik.handleSubmit}>
                         <div className="mb-3">
                             <label htmlFor="title" className="form-label" style={{ color: "#495057" }}>Title</label>
@@ -65,7 +65,6 @@ function AddTask() {
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
                                 placeholder="Enter task title"
-                                style={{ borderColor: formik.errors.title ? "#DC3545" : "#CED4DA" }}
                             />
                             {formik.touched.title && formik.errors.title && (
                                 <div className="invalid-feedback">{formik.errors.title}</div>
@@ -83,7 +82,6 @@ function AddTask() {
                                 onBlur={formik.handleBlur}
                                 placeholder="Enter task description"
                                 rows="4"
-                                style={{ borderColor: formik.errors.description ? "#DC3545" : "#CED4DA" }}
                             />
                             {formik.touched.description && formik.errors.description && (
                                 <div className="invalid-feedback">{formik.errors.description}</div>
@@ -99,7 +97,6 @@ function AddTask() {
                                 value={formik.values.status}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                style={{ borderColor: formik.errors.status ? "#DC3545" : "#CED4DA" }}
                             >
                                 <option value="" disabled>Select status</option>
                                 <option value="pending">Pending</option>
@@ -121,7 +118,6 @@ function AddTask() {
                                 value={formik.values.due_date}
                                 onChange={formik.handleChange}
                                 onBlur={formik.handleBlur}
-                                style={{ borderColor: formik.errors.due_date ? "#DC3545" : "#CED4DA" }}
                             />
                             {formik.touched.due_date && formik.errors.due_date && (
                                 <div className="invalid-feedback">{formik.errors.due_date}</div>
