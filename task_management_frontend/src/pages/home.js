@@ -8,7 +8,6 @@ import DataTable from 'react-data-table-component';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import 'bootstrap-icons/font/bootstrap-icons.css';
 
-
 function TaskList() {
     const [tasks, setTasks] = useState([]);
     const [statusFilter, setStatusFilter] = useState('');
@@ -91,25 +90,49 @@ function TaskList() {
             name: '#',
             selector: (row, index) => index + 1,
             width: '50px',
+            cell: (row, index) => (
+                <span style={{ color: '#495057', fontWeight: 'bold' }}>{index + 1}</span>
+            ),
         },
         {
             name: 'Title',
             selector: (row) => row.title,
             sortable: true,
+            cell: (row) => (
+                <span style={{ color: '#080808', fontWeight: 'bold' }}>{row.title}</span>
+            ),
         },
         {
             name: 'Description',
             selector: (row) => row.description,
+            cell: (row) => (
+                <span style={{ color: '#6C757D' }}>{row.description}</span>
+            ),
         },
         {
             name: 'Status',
             selector: (row) => row.status,
             sortable: true,
+            cell: (row) => (
+                <span
+                    style={{
+                        color: row.status === 'completed' ? '#28A745' : row.status === 'in progress' ? '#FFC107' : '#DC3545',
+                        fontWeight: 'bold',
+                    }}
+                >
+                    {row.status}
+                </span>
+            ),
         },
         {
             name: 'Due Date',
             selector: (row) => row.due_date ? new Date(row.due_date).toLocaleDateString() : 'No due date',
             sortable: true,
+            cell: (row) => (
+                <span style={{ color: '#495057' }}>{
+                    row.due_date ? new Date(row.due_date).toLocaleDateString() : 'No due date'
+                }</span>
+            ),
         },
         {
             name: 'Actions',
@@ -126,7 +149,7 @@ function TaskList() {
                         className="btn btn-danger"
                         onClick={(e) => handleDelete(e, row.id)}
                     >
-                        <i class="bi bi-trash"></i>
+                        <i className="bi bi-trash"></i>
                     </button>
                 </div>
             ),
@@ -137,15 +160,16 @@ function TaskList() {
         <>
             <Navbar />
 
-            <div className="container border shadow p-4 mx-auto mt-4">
+            <div className="container border shadow p-4 mx-auto mt-4" style={{ backgroundColor: '#F8F9FA' }}>
                 <ToastContainer />
-                <h1 className="text-center mb-4">Task Management System</h1>
+                <h1 className="text-center mb-4" style={{ color: '#2b2d2e' }}>Task Management System</h1>
 
                 <div className="d-flex justify-content-between mb-4">
                     <select
                         className="form-control w-25"
                         onChange={(e) => setStatusFilter(e.target.value)}
                         value={statusFilter}
+                        style={{ borderColor: '#2b2d2e', color: '#2b2d2e' }}
                     >
                         <option value="">Filter by Status</option>
                         <option value="pending">Pending</option>
@@ -157,6 +181,7 @@ function TaskList() {
                         className="form-control w-25"
                         onChange={(e) => setSortOrder(e.target.value)}
                         value={sortOrder}
+                        style={{ borderColor: '#2b2d2e', color: '#2b2d2e' }}
                     >
                         <option value="asc">Sort by Due Date (Ascending)</option>
                         <option value="desc">Sort by Due Date (Descending)</option>
@@ -164,7 +189,7 @@ function TaskList() {
                 </div>
 
                 {isLoading ? (
-                    <p>Loading tasks...</p>
+                    <p style={{ color: '#2b2d2e', fontWeight: 'bold' }}>Wait for your tasks...</p>
                 ) : (
                     <DataTable
                         columns={columns}
@@ -174,6 +199,26 @@ function TaskList() {
                         striped
                         responsive
                         noHeader
+                        customStyles={{
+                            rows: {
+                                style: {
+                                    minHeight: '50px',
+                                    backgroundColor: '#F8F9FA',
+                                },
+                            },
+                            headCells: {
+                                style: {
+                                    backgroundColor: '#2b2d2e',
+                                    color: '#FFFFFF',
+                                    fontWeight: 'bold',
+                                },
+                            },
+                            cells: {
+                                style: {
+                                    color: '#495057',
+                                },
+                            },
+                        }}
                     />
                 )}
             </div>

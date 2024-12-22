@@ -51,7 +51,7 @@ function AddTask() {
             <Navbar />
             <ToastContainer />
             <div className="container mt-5">
-                <h1 className="text-center mb-4" style={{ color: "#007BFF" }}>Add New Task</h1>
+                <h1 className="text-center mb-4" style={{ color: "#2b2d2e" }}>Add New Task</h1>
                 <div className="card shadow-sm p-4" style={{ backgroundColor: "#F8F9FA" }}>
                     <form onSubmit={formik.handleSubmit}>
                         <div className="mb-3">
@@ -128,7 +128,7 @@ function AddTask() {
                             )}
                         </div>
 
-                        <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#007BFF", borderColor: "#007BFF" }}>Submit</button>
+                        <button type="submit" className="btn btn-primary w-100" style={{ backgroundColor: "#2b2d2e", borderColor: "#080808" }}>Submit</button>
                     </form>
                 </div>
             </div>
