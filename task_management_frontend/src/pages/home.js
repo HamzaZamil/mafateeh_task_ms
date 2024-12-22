@@ -4,7 +4,6 @@ import Navbar from "../components/navbar";
 import { ToastContainer, toast } from 'react-toastify';
 import 'react-toastify/dist/ReactToastify.css';
 import { useNavigate } from 'react-router-dom';
-import { initializeCsrfToken } from '../api/axiosInstance';
 
 function TaskList() {
     const [tasks, setTasks] = useState([]);
@@ -15,12 +14,24 @@ function TaskList() {
 
     const fetchTasks = async () => {
         setIsLoading(true);
+        const token = sessionStorage.getItem('authToken');
+        if (!token) {
+            toast.error('Authorization token is missing. Redirecting to login...');
+            navigate('/login'); // Redirect to login page
+            setIsLoading(false);
+            return;
+        }
+
         try {
-            const response = await axios.get('/tasks'); // AxiosInstance already adds headers
+            const response = await axios.get('/tasks', {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             setTasks(response.data);
-           
+            console.log(response.data);
         } catch (error) {
-            console.error('Error fetching tasks:', error);
+            console.error('Error fetching tasks:', error.response?.data || error.message);
             toast.error('Failed to fetch tasks. Please try again.');
         } finally {
             setIsLoading(false);
@@ -28,30 +39,26 @@ function TaskList() {
     };
 
     useEffect(() => {
-        const initializeAndFetch = async () => {
-            await initializeCsrfToken(); // Initialize CSRF token
-            fetchTasks(); // Fetch tasks after CSRF initialization
-        };
-        initializeAndFetch();
+        fetchTasks();
     }, []);
-
-    const filteredTasks = tasks.filter(task => {
-        if (statusFilter) {
-            return task.status === statusFilter;
-        }
-        return true;
-    });
-
-    const sortedTasks = [...filteredTasks].sort((a, b) => {
-        const dateA = new Date(a.dueDate);
-        const dateB = new Date(b.dueDate);
-        return sortOrder === 'asc' ? dateA - dateB : dateB - dateA;
-    });
 
     const handleDelete = async (e, id) => {
         e.preventDefault();
+
         try {
-            await axios.delete(`/tasks/${id}`); // AxiosInstance already adds headers
+            const token = sessionStorage.getItem("authToken");
+            if (!token) {
+                toast.error('Authorization token is missing. Please log in.');
+                return;
+            }
+
+            await axios.delete(`/tasks/${id}`, {
+                headers: {
+                    Authorization: `Bearer ${token}`,
+                },
+                withCredentials: true,
+            });
+
             const newTasks = tasks.filter((task) => task.id !== id);
             setTasks(newTasks);
             toast.success('Task deleted successfully');
@@ -72,7 +79,7 @@ function TaskList() {
 
             <div className="container border shadow p-3 mx-auto mt-4">
                 <ToastContainer />
-                <h1 className="text-center">Task List</h1>
+                <h1 className="text-center">Task Management System</h1>
                 <div className="d-flex justify-content-between mb-3">
                     <select
                         className="form-control w-25"
@@ -110,12 +117,12 @@ function TaskList() {
                             </tr>
                         </thead>
                         <tbody>
-                            {sortedTasks.length === 0 ? (
+                            {tasks.length === 0 ? (
                                 <tr>
                                     <td colSpan="6">No tasks found</td>
                                 </tr>
                             ) : (
-                                sortedTasks.map((task, index) => (
+                                tasks.map((task, index) => (
                                     <tr key={task.id}>
                                         <td>{index + 1}</td>
                                         <td>{task.title}</td>
