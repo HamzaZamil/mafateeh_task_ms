@@ -198,7 +198,7 @@ function TaskList() {
                         onChange={(e) => setStatusFilter(e.target.value)}
                         value={statusFilter}
                     >
-                        <option value="">choose your progress</option>
+                        <option value="">Filter your progress</option>
                         <option value="pending">Pending</option>
                         <option value="in progress">In Progress</option>
                         <option value="completed">Completed</option>
@@ -209,8 +209,8 @@ function TaskList() {
                         onChange={(e) => setSortOrder(e.target.value)}
                         value={sortOrder}
                     >
-                        <option value="asc">Sort by Due Date (Ascending)</option>
-                        <option value="desc">Sort by Due Date (Descending)</option>
+                        <option value="asc">Date Ascending</option>
+                        <option value="desc">Date Descending</option>
                     </select>
                 </div>
 
